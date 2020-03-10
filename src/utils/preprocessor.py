@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.misc import imread, imresize
-
+#from scipy.misc import imread, imresize
+import scipy.misc
 
 def preprocess_input(x, v2=True):
     x = x.astype('float32')
