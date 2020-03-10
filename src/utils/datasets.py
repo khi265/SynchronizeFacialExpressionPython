@@ -4,8 +4,10 @@ import numpy as np
 from random import shuffle
 import os
 import cv2
+import pathlib
 
 
+p = pathlib.Path('temp/file.txt')
 class DataManager(object):
     """Class for loading fer2013 emotion classification dataset or
         imdb gender classification dataset."""
@@ -20,6 +22,8 @@ class DataManager(object):
         elif self.dataset_name == 'imdb':
             self.dataset_path = '../datasets/imdb_crop/imdb.mat'
         elif self.dataset_name == 'fer2013':
+            print(p.cwd())
+            print('asaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             self.dataset_path = '../datasets/fer2013/fer2013.csv'
         elif self.dataset_name == 'KDEF':
             self.dataset_path = '../datasets/KDEF/'
@@ -68,7 +72,8 @@ class DataManager(object):
             faces.append(face.astype('float32'))
         faces = np.asarray(faces)
         faces = np.expand_dims(faces, -1)
-        emotions = pd.get_dummies(data['emotion']).as_matrix()
+        print(pd.get_dummies(data['emotion']))
+        emotions = pd.get_dummies(data['emotion']).values
         return faces, emotions
 
     def _load_KDEF(self):

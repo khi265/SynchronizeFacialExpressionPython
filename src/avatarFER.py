@@ -76,5 +76,5 @@ def FER(path) :
         else:
             color = (255, 0, 0)
 
-    return emotion_text
+        return emotion_text
 

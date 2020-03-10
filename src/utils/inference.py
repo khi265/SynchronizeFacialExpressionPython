@@ -3,9 +3,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 from keras.preprocessing import image
 
-def load_image(image_path, grayscale=False, target_size=None):
+def load_image(image_path, grayscale=False,color_mode = 'rgb' ,  target_size=None):
     pil_image = image.load_img(image_path, grayscale, target_size)
     return image.img_to_array(pil_image)
+
+# def load_image(image_path, grayscale=False, target_size=None):
+#     color_mode = 'grayscale'
+#     if grayscale == False:
+#         color_mode = 'rgb' 
+#     else:
+#         grayscale = False
+#     pil_image = image.load_img(image_path, grayscale, color_mode, target_size)
+#     return image.img_to_array(pil_image) 
 
 def load_detection_model(model_path):
     detection_model = cv2.CascadeClassifier(model_path)
