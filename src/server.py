@@ -1,3 +1,6 @@
+#  Interface with Unity and Python program .
+#  This can receive the real-time facial expression recognition result data from "video_emotion_color_demo.py"
+
 from flask import *
 import codecs
 import os
@@ -23,38 +26,36 @@ detection_model_path = '../trained_models/detection_models/haarcascade_frontalfa
 emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
 gender_model_path = '../trained_models/gender_models/simple_CNN.81-0.96.hdf5'
 graph = tf.get_default_graph()
-engine = create_engine('sqlite:///emotion.db')  # user.db というデータベースを使うという宣言です
-Base = declarative_base()  # データベースのテーブルの親です
+engine = create_engine('sqlite:///emotion.db')
+Base = declarative_base()
 
-class EmoT(Base):  # PythonではUserというクラスのインスタンスとしてデータを扱います
-    __tablename__ = 'emotions'  # テーブル名は users です
-    id = Column(Integer, primary_key=True, unique=True)  # 整数型のid をprimary_key として、被らないようにします
-    emotion = Column(String)  # 文字列の emailというデータを作ります
-    Created_At = Column(Time, default=datetime.datetime.now().time())  # 文字列の nameというデータを使います
+#This Database stores facial expression recognition result data from "video_emotion_color_demo.py"
+class EmoT(Base):  # Database
+    __tablename__ = 'emotions' 
+    id = Column(Integer, primary_key=True, unique=True)
+    emotion = Column(String)
+    Created_At = Column(Time, default=datetime.datetime.now().time())
 
-    # def __repr__(self):
-    #     return "User<{}, {}, {}>".format(self.id, self.email, self.name)
-Base.metadata.create_all(engine)  # 実際にデータベースを構築します
-SessionMaker = sessionmaker(bind=engine)  # Pythonとデータベースの経路です
-session = SessionMaker()  # 経路を実際に作成しました
+Base.metadata.create_all(engine) 
+SessionMaker = sessionmaker(bind=engine)
+session = SessionMaker()
 
-t = session.query(func.count(EmoT.id)).first()
-t = str(t)
-t = t[1:-2]
-print('t:' + t)
-ss = session.query(EmoT.emotion).filter(EmoT.id == t).all()
-ss = str(ss)
-ss = ss[3:-4]
-print(ss)
+# t = session.query(func.count(EmoT.id)).first()
+# t = str(t)
+# t = t[1:-2]
+# print('t:' + t)
+# ss = session.query(EmoT.emotion).filter(EmoT.id == t).all()
+# ss = str(ss)
+# ss = ss[3:-4]
+# print(ss)
 
-tmp = ""
-sendDataToUnity = ""
-
+# test
 @app.route('/')
 def hello():
     hello = "Hello world"
     return img
 
+#This routing can receive facial expression recognition result data from "video_emotion_color_demo.py
 @app.route('/hello', methods=['POST' , 'GET']) #Methodを明示する必要あり
 def hello2():
     name = "no"
@@ -64,16 +65,11 @@ def hello2():
         a = request.get_json()
         print(a['emo'])
         a = a['emo']
-        # g.sendDataToUnity = a['emo']
-        # print('senddata : ' + sendDataToUnity + ' g : ' + g.sendDataToUnity)
-        # setData(g.sendDataToUnity)
-        SessionMaker = sessionmaker(bind=engine)  # Pythonとデータベースの経路です
-        session = SessionMaker()  # 経路を実際に作成しました
+        SessionMaker = sessionmaker(bind=engine)
+        session = SessionMaker()
         emotmp2 = EmoT(emotion = a)
-        session.add(emotmp2)  # user1 をデータベースに入力するための準備をします
-        session.commit()  # 実際にデータベースにデータを入れます
-        #session.rollback()
-        #if()session.query(EmoT).delete()
+        session.add(emotmp2)
+        session.commit()
         cnt = session.query(func.count(EmoT.id)).first()
         cnt = str(cnt)
         cnt = cnt[1:-2]
@@ -83,10 +79,9 @@ def hello2():
         ss = ss[3:-4]
         print('sssssss:' + str(ss) + ' cnt : ' + cnt)
         return a
-        #return img
     elif request.method == 'GET' :
-        SessionMaker = sessionmaker(bind=engine)  # Pythonとデータベースの経路です
-        session = SessionMaker()  # 経路を実際に作成しました
+        SessionMaker = sessionmaker(bind=engine)
+        session = SessionMaker()
         t = session.query(func.count(EmoT.id)).first()
         t = str(t)
         t = t[1:-2]
@@ -101,7 +96,8 @@ def hello2():
         return name
     return name
 
-@app.route('/AvatarFER', methods=['POST' , 'GET']) #Methodを明示する必要あり
+#This routing is used facial expression recognition of avatar's face
+@app.route('/AvatarFER', methods=['POST' , 'GET'])
 def FER():
     global graph
     tmp = 'err'
